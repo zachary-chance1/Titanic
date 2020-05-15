@@ -81,7 +81,37 @@ summary(longEqOLS)
 longEqRobust = rlm(survivor ~ classIsFirst + isChild + genderIsFemale, data = titanicdata, psi = psi.hampel)
 summary(longEqRobust)
 
+shortOLSCol = ols$coefficients
+shortOLSCol["isChild"] = "NA"
+shortOLSCol["genderIsFemale"] = "NA"
+shortOLSCol["Mean Survival"] = mean(titanicdata$survivor)
+shortOLSCol["Observations"] = len
+
+shortRobustCol = robust$coefficients
+shortRobustCol["isChild"] = "NA"
+shortRobustCol["genderIsFemale"] = "NA"
+shortRobustCol["Mean Survival"] = mean(titanicdata$survivor)
+shortRobustCol["Observations"] = len
+
+longOLSCol = longEqOLS$coefficients
+longOLSCol["Mean Survival"] = mean(titanicdata$survivor)
+longOLSCol["Observations"] = len
+
+longRobustCol = longEqRobust$coefficients
+longRobustCol["Mean Survival"] = mean(titanicdata$survivor)
+longRobustCol["Observations"] = len
+
+beautifulFrame = cbind(shortOLSCol,shortRobustCol,longOLSCol,longRobustCol)
+beautifulFrame
 
 
 
+#Question 8 - manual reg anatomy
 
+
+longReg = lm(survivor ~ classIsFirst + isChild + genderIsFemale, data = titanicdata)
+auxReg = lm(classIsFirst ~ isChild + genderIsFemale, data = titanicdata)
+titanicdata$residuals = auxReg$residuals
+resReg = lm(survivor ~ residuals, data = titanicdata)
+summary(longReg)
+summary(resReg)

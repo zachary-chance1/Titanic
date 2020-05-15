@@ -66,10 +66,9 @@ for(n in seq(1:len)){
 }
 
 ovbSexTerm = cov(titanicdata$genderIsFemale, titanicdata$classIsFirst) / var(titanicdata$classIsFirst)
-#make it negative because we assume women and children are less likely to survive
-ovbSexTerm = -1 * ovbSexTerm
+#keep it positive because we assume women and children are more likely to survive
 ovbAgeTerm = cov(titanicdata$isChild, titanicdata$classIsFirst) / var(titanicdata$classIsFirst)
-ovbAgeTerm = -1 * ovbAgeTerm
+
 
 olsTrueEff = ols$coefficients[2]
 olsTrueEff = olsTrueEff - ovbSexTerm

@@ -141,8 +141,26 @@ resReg = lm(survivor ~ residuals, data = titanicdata)
 summary(longReg)
 summary(resReg)
 
+longRegCol = longReg$coefficients
+longRegCol["SE (Intercept)"] = sqrt(diag(vcov(longReg)))[1]
+longRegCol["SE isFirstClass"] = sqrt(diag(vcov(longReg)))[2]
+longRegCol["SE isChild"] = sqrt(diag(vcov(longReg)))[3]
+longRegCol["SE genderIsFemale"] = sqrt(diag(vcov(longReg)))[4]
+
+resRegCol = resReg$coefficients
+resRegCol["isChild"] = "NA"
+resRegCol["genderIsFemale"] = "NA"
+resRegCol["SE (Intercept)"] = sqrt(diag(vcov(resReg)))[1]
+resRegCol["SE isFirstClass"] = sqrt(diag(vcov(resReg)))[2]
+resRegCol["SE isChild"] = "NA"
+resRegCol["SE genderIsFemale"] = "NA"
+
+resAnatTable = cbind(longRegCol,resRegCol)
+
 
 #7h table - needs title, but im new to the package
 grid.table(beautifulFrame)
 
+#8 table
+grid.table(resAnatTable)
 

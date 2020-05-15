@@ -39,3 +39,22 @@ for(j in seq(1:len)){
     titanicdata$classIsFirst[j] = 1
   }
 }
+
+
+#7d - OLS and robust regressions - note that this requires another dummy for survival
+
+titanicdata$survivor = 0
+for(q in seq(1:len)){
+  if(titanicdata$survived[q] == "yes"){
+    titanicdata$survivor[q] = 1
+  }
+}
+
+ols = lm(survivor ~ classIsFirst, data = titanicdata)
+summary(ols)
+
+robust = rlm(survivor ~ classIsFirst, data = titanicdata, psi = psi.hampel)
+summary(robust)
+
+
+

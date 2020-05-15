@@ -13,7 +13,13 @@ setwd(WORK.DIR)
 
 packages <- c("MASS",
               "foreign",
-              "readstata13")
+              "readstata13",
+              "ggplot2",
+              "tidyverse",
+              "glue",
+              "grid",
+              "gridExtra",
+              "plotrix")
 not_installed <- !packages %in% installed.packages()
 if(any(not_installed)) install.packages(packages[not_installed])
 lapply(packages, require, character.only=TRUE)
@@ -84,24 +90,43 @@ summary(longEqRobust)
 shortOLSCol = ols$coefficients
 shortOLSCol["isChild"] = "NA"
 shortOLSCol["genderIsFemale"] = "NA"
+shortOLSCol["SE (Intercept)"] = sqrt(diag(vcov(ols)))[1]
+shortOLSCol["SE isFirstClass"] = sqrt(diag(vcov(ols)))[2]
+shortOLSCol["SE isChild"] = "NA"
+shortOLSCol["SE genderIsFemale"] = "NA"
 shortOLSCol["Mean Survival"] = mean(titanicdata$survivor)
 shortOLSCol["Observations"] = len
 
 shortRobustCol = robust$coefficients
 shortRobustCol["isChild"] = "NA"
 shortRobustCol["genderIsFemale"] = "NA"
+shortRobustCol["SE (Intercept)"] = sqrt(diag(vcov(robust)))[1]
+shortRobustCol["SE isFirstClass"] = sqrt(diag(vcov(robust)))[2]
+shortRobustCol["SE isChild"] = "NA"
+shortRobustCol["SE genderIsFemale"] = "NA"
 shortRobustCol["Mean Survival"] = mean(titanicdata$survivor)
 shortRobustCol["Observations"] = len
 
 longOLSCol = longEqOLS$coefficients
+longOLSCol["SE (Intercept)"] = sqrt(diag(vcov(longEqOLS)))[1]
+longOLSCol["SE isFirstClass"] = sqrt(diag(vcov(longEqOLS)))[2]
+longOLSCol["SE isChild"] = sqrt(diag(vcov(longEqOLS)))[3]
+longOLSCol["SE genderIsFemale"] = sqrt(diag(vcov(longEqOLS)))[4]
 longOLSCol["Mean Survival"] = mean(titanicdata$survivor)
 longOLSCol["Observations"] = len
 
 longRobustCol = longEqRobust$coefficients
+longRobustCol["SE (Intercept)"] = sqrt(diag(vcov(longEqRobust)))[1]
+longRobustCol["SE isFirstClass"] = sqrt(diag(vcov(longEqRobust)))[2]
+longRobustCol["SE isChild"] = sqrt(diag(vcov(longEqRobust)))[3]
+longRobustCol["SE genderIsFemale"] = sqrt(diag(vcov(longEqRobust)))[4]
 longRobustCol["Mean Survival"] = mean(titanicdata$survivor)
 longRobustCol["Observations"] = len
 
 beautifulFrame = cbind(shortOLSCol,shortRobustCol,longOLSCol,longRobustCol)
+
+
+
 beautifulFrame
 
 
@@ -115,3 +140,9 @@ titanicdata$residuals = auxReg$residuals
 resReg = lm(survivor ~ residuals, data = titanicdata)
 summary(longReg)
 summary(resReg)
+
+
+#7h table - needs title, but im new to the package
+grid.table(beautifulFrame)
+
+

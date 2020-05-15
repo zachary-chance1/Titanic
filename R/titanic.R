@@ -19,13 +19,23 @@ if(any(not_installed)) install.packages(packages[not_installed])
 lapply(packages, require, character.only=TRUE)
 
 titanicdata = read.dta13("Data/titanic.dta")
-titanicdata$genderIsFemale = 0
+
 
 #7b - dummy for women
+titanicdata$genderIsFemale = 0
 len = dim(titanicdata)
 len = len[1]
 for(i in seq(1:len)){
   if(titanicdata$sex[i] == "women"){
     titanicdata$genderIsFemale[i] = 1
+  }
+}
+
+
+#7c - dummy for first class
+titanicdata$classIsFirst = 0
+for(j in seq(1:len)){
+  if(titanicdata$class[j] == "1st class"){
+    titanicdata$classIsFirst[j] = 1
   }
 }

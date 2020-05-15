@@ -57,4 +57,32 @@ robust = rlm(survivor ~ classIsFirst, data = titanicdata, psi = psi.hampel)
 summary(robust)
 
 
+#7e - the true estimator if 7d was the short regression
+titanicdata$isChild = 0
+for(n in seq(1:len)){
+  if(titanicdata$age[n] == "child"){
+    titanicdata$isChild[n] = 1
+  }
+}
+
+ovbSexTerm = cov(titanicdata$genderIsFemale, titanicdata$classIsFirst) / var(titanicdata$classIsFirst)
+#make it negative because we assume women and children are less likely to survive
+ovbSexTerm = -1 * ovbSexTerm
+ovbAgeTerm = cov(titanicdata$isChild, titanicdata$classIsFirst) / var(titanicdata$classIsFirst)
+ovbAgeTerm = -1 * ovbAgeTerm
+
+olsTrueEff = ols$coefficients[2]
+olsTrueEff = olsTrueEff - ovbSexTerm
+olsTrueEff = olsTrueEff - ovbAgeTerm
+
+
+longEqOLS = lm(survivor ~ classIsFirst + isChild + genderIsFemale, data = titanicdata)
+summary(longEqOLS)
+
+longEqRobust = rlm(survivor ~ classIsFirst + isChild + genderIsFemale, data = titanicdata, psi = psi.hampel)
+summary(longEqRobust)
+
+
+
+
 
